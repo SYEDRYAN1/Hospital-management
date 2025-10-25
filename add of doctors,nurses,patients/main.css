@@ -1,4 +1,4 @@
-/* ...existing CSS... */
+/* ---- Base Layout ---- */
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -9,6 +9,8 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+
+/* ---- Topbar ---- */
 .topbar {
   display: flex;
   align-items: center;
@@ -19,16 +21,28 @@ body {
   position: relative;
   z-index: 2;
 }
+
 .menu-icon {
   font-size: 1.7em;
   margin-right: 18px;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #1976d2;
+  transition: color 0.2s;
 }
+
+.menu-icon:hover {
+  color: #1565c0;
+}
+
+/* ---- Tabs ---- */
 .tabs {
   display: flex;
   gap: 32px;
   flex: 1;
 }
+
 .tab {
   padding: 8px 18px;
   font-size: 1.1em;
@@ -36,17 +50,26 @@ body {
   border-radius: 8px 8px 0 0;
   background: #f6f8fa;
   margin-top: 8px;
+  transition: background 0.2s, border-bottom 0.2s;
 }
+
+.tab:hover {
+  background: #e3f2fd;
+}
+
 .tab.active {
   background: #e3f2fd;
   font-weight: bold;
   border-bottom: 2px solid #1976d2;
 }
+
+/* ---- Right Controls ---- */
 .right-controls {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .add-button {
   font-size: 1.5em;
   background: #1976d2;
@@ -56,7 +79,15 @@ body {
   width: 36px;
   height: 36px;
   cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
 }
+
+.add-button:hover {
+  background: #1565c0;
+  transform: scale(1.1);
+}
+
+/* ---- Add Menu ---- */
 .add-menu {
   position: absolute;
   top: 56px;
@@ -69,35 +100,45 @@ body {
   min-width: 160px;
   z-index: 10;
 }
+
 .add-menu.show {
   display: flex;
 }
+
 .add-menu-item {
   padding: 12px 18px;
   cursor: pointer;
   border-bottom: 1px solid #eee;
 }
+
 .add-menu-item:last-child {
   border-bottom: none;
 }
+
 .add-menu-item:hover {
   background: #e3f2fd;
 }
+
+/* ---- Main Container ---- */
 .main-container {
   display: flex;
   flex: 1;
   min-height: 0;
 }
+
 .sidebar {
+  width: 260px;
   background: #fff;
-  width: 180px;
-  min-width: 140px;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
-  padding: 18px 0;
+  height: calc(100vh - 56px); /* subtract topbar height */
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  margin-top: 0; /* make sure there's no offset */
 }
+
+
+
 .doctor-item {
   padding: 12px 18px;
   cursor: pointer;
@@ -106,10 +147,14 @@ body {
   font-size: 1.05em;
   transition: background 0.2s;
 }
-.doctor-item:hover, .doctor-item.selected {
+
+.doctor-item:hover,
+.doctor-item.selected {
   background: #e3f2fd;
   font-weight: bold;
 }
+
+/* ---- Content ---- */
 .content {
   flex: 1;
   padding: 32px 40px;
@@ -119,21 +164,26 @@ body {
   flex-direction: column;
   gap: 24px;
 }
+
 .timing {
   font-size: 1.1em;
   color: #1976d2;
   text-align: right;
   margin-bottom: 8px;
 }
+
 .doctor-title {
   font-size: 2em;
   font-weight: bold;
   margin-bottom: 12px;
 }
+
 .patient-info {
   font-size: 1.2em;
   margin-bottom: 12px;
 }
+
+/* ---- Buttons ---- */
 .details-button, .back-button {
   display: inline-block;
   margin-top: 12px;
@@ -145,9 +195,12 @@ body {
   font-size: 1em;
   transition: background 0.2s;
 }
+
 .details-button:hover, .back-button:hover {
   background: #1565c0;
 }
+
+/* ---- Patient Report ---- */
 .patient-report-container {
   background: #fff;
   border-radius: 12px;
@@ -155,11 +208,14 @@ body {
   padding: 32px;
   margin-top: 16px;
 }
+
+/* ---- Info Cards ---- */
 .header-cards {
   display: flex;
   gap: 32px;
   margin-bottom: 24px;
 }
+
 .info-card {
   background: #e3f2fd;
   border-radius: 8px;
@@ -168,16 +224,20 @@ body {
   font-weight: 500;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
+
 .patient-count-card {
   background: #fffde7;
   color: #fbc02d;
 }
+
+/* ---- Patient Table ---- */
 .patient-table {
   display: flex;
   flex-direction: column;
   gap: 0;
   margin-top: 12px;
 }
+
 .table-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
@@ -187,6 +247,7 @@ body {
   padding: 12px 0;
   font-size: 1.1em;
 }
+
 .table-row-template {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
@@ -195,17 +256,34 @@ body {
   padding: 12px 0;
   font-size: 1em;
 }
+
 .report-detail-cell {
   font-size: 0.98em;
   color: #333;
 }
+
 .table-row-template:last-child {
   border-radius: 0 0 8px 8px;
   border-bottom: none;
   background: #fff;
 }
 
-/* Doctor categories menu buttons */
+/* ---- Doctor Categories Dropdown ---- */
+.doctor-categories {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background: #fff;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  overflow: hidden;
+  animation: fadeIn 0.25s ease-out;
+  min-width: 180px;
+}
+
 .doctor-categories .category-item {
   display: block;
   width: 100%;
@@ -216,9 +294,66 @@ body {
   cursor: pointer;
   font-size: 1em;
   color: #222;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
 }
+
 .doctor-categories .category-item:hover,
 .doctor-categories .category-item:focus {
   background: #e3f2fd;
+  color: #1976d2;
   outline: none;
+}
+
+.specialization-button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 1em;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.specialization-button:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.specialization-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-box {
+  padding: 12px 16px;
+  background: #fff; /* same as sidebar background */
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0; /* keeps it visible at top */
+}
+
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box input:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.15);
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

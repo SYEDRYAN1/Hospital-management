@@ -34,6 +34,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderDoctors();
 
+  // --- Doctor Search ---
+const searchInput = document.getElementById('doctorSearch');
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase().trim();
+
+  const filteredDoctors = doctors.filter(doc =>
+    doc.name.toLowerCase().includes(query) ||
+    doc.specialty.toLowerCase().includes(query)
+  );
+
+  sidebar.innerHTML = '';
+  filteredDoctors.forEach((doc, idx) => {
+    const div = document.createElement('div');
+    div.className = 'doctor-item';
+    div.textContent = doc.name;
+    div.dataset.idx = doctors.indexOf(doc); // keep actual reference
+    sidebar.appendChild(div);
+  });
+});
+
+
   function showDoctorDetails(doctor) {
     doctorTitle.textContent = doctor.name;
     timingEl.textContent = `Timing: ${doctor.timing}`;

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Categories</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f6f8fa;
+      color: #222;
+      font-size: 1.1em;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 0 24px;
+      height: 56px;
+      position: relative;
+      z-index: 2;
+    }
+    .menu-icon {
+      font-size: 1.7em;
+      margin-right: 18px;
+      cursor: pointer;
+    }
+    .tabs {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+    }
+    .tab {
+      padding: 8px 18px;
+      font-size: 1.1em;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      background: #f6f8fa;
+      margin-top: 8px;
+    }
+    .tab.active {
+      background: #e3f2fd;
+      font-weight: bold;
+      border-bottom: 2px solid #1976d2;
+    }
+    .content {
+      flex: 1;
+      padding: 32px 40px;
+      background: #f6f8fa;
+      overflow-y: auto;
+    }
+    .category-title {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 24px;
+      color: #1976d2;
+    }
+    .category-section {
+      margin-bottom: 48px;
+    }
+    .specialty-header {
+      font-size: 1.4em;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #333;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e3f2fd;
+    }
+    .doctor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .doctor-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .doctor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      background: #e3f2fd;
+    }
+    .doctor-name {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #1976d2;
+    }
+    .doctor-specialty {
+      font-size: 0.95em;
+      color: #666;
+    }
+    .doctor-timing {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 4px;
+    }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 18px;
+      background: #1976d2;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1em;
+      transition: background 0.2s;
+    }
+    .back-button:hover {
+      background: #1565c0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="menu-icon">Logo</div>
+    <div class="tabs">
+      <div class="tab active">Doctor</div>
+      <div class="tab">Nurse</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <a href="main.html" class="back-button">← Back to Overview</a>
+    
+    <div class="category-title">category</div>
+
+    <div id="categoryContainer">
+      <!-- Categories will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <script>
+    // Sample doctor data - replace with your CSV data
+    const doctorsData = [
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "9am - 2pm" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "2pm - 7pm" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "7pm - 12am" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "12am - 5am" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "5am - 10am" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "10am - 3pm" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "3pm - 8pm" },
+      { name: "dr. wjhb", specialty: "Cardiologist", timing: "8pm - 1am" },
+      { name: "Dr. Smith", specialty: "Neurologist", timing: "8am - 1pm" },
+      { name: "Dr. Brown", specialty: "Neurologist", timing: "1pm - 6pm" },
+      { name: "Dr. Davis", specialty: "Pediatrician", timing: "9am - 3pm" },
+      { name: "Dr. Wilson", specialty: "Surgeon", timing: "7am - 2pm" },
+      { name: "Dr. Taylor", specialty: "General Physician", timing: "10am - 4pm" }
+    ];
+
+    // Load from CSV if available
+    fetch('Data/DoctorData.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const doctors = csv.split('\n').map(line => {
+          const parts = line.split(';');
+          return {
+            name: parts[0] ? parts[0].trim() : '',
+            specialty: parts[1] ? parts[1].trim() : '',
+            timing: parts[2] ? parts[2].trim() : ''
+          };
+        }).filter(d => d.name);
+        
+        if (doctors.length > 0) {
+          renderCategories(doctors);
+        } else {
+          renderCategories(doctorsData);
+        }
+      })
+      .catch(err => {
+        console.log('CSV not found, using sample data');
+        renderCategories(doctorsData);
+      });
+
+    function renderCategories(doctors) {
+      // Group doctors by specialty
+      const grouped = {};
+      doctors.forEach(doc => {
+        if (!grouped[doc.specialty]) {
+          grouped[doc.specialty] = [];
+        }
+        grouped[doc.specialty].push(doc);
+      });
+
+      const container = document.getElementById('categoryContainer');
+      container.innerHTML = '';
+
+      // Render each specialty group
+      Object.keys(grouped).sort().forEach(specialty => {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        
+        const header = document.createElement('div');
+        header.className = 'specialty-header';
+        header.textContent = specialty;
+        section.appendChild(header);
+
+        const grid = document.createElement('div');
+        grid.className = 'doctor-grid';
+
+        grouped[specialty].forEach(doctor => {
+          const card = document.createElement('div');
+          card.className = 'doctor-card';
+          card.onclick = () => {
+            // Navigate to main page or show doctor details
+            window.location.href = `main.html?doctor=${encodeURIComponent(doctor.name)}`;
+          };
+
+          card.innerHTML = `
+            <div class="doctor-name">${doctor.name}</div>
+            <div class="doctor-specialty">${doctor.specialty}</div>
+            <div class="doctor-timing">${doctor.timing}</div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+      });
+    }
+  </script>
+
+</body>
+</html>
