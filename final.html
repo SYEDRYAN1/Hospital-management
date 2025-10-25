@@ -167,68 +167,87 @@
     Hospital Management System © 2025 | Nurse Panel
   </footer>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const doctorList = document.getElementById('doctorList');
-      const doctorTitle = document.getElementById('doctorTitle');
-      const patientInfo = document.getElementById('patientInfo');
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const doctorList = document.getElementById('doctorList');
+    const doctorTitle = document.getElementById('doctorTitle');
+    const patientInfo = document.getElementById('patientInfo');
 
-      const doctorInput = document.getElementById('doctorNameInput');
-      const patientInput = document.getElementById('patientNameInput');
-      const roomInput = document.getElementById('roomInput');
-      const nurseInput = document.getElementById('nurseInput');
-      const addButton = document.getElementById('addDoctorBtn');
+    const doctorInput = document.getElementById('doctorNameInput');
+    const patientInput = document.getElementById('patientNameInput');
+    const roomInput = document.getElementById('roomInput');
+    const nurseInput = document.getElementById('nurseInput');
+    const addButton = document.getElementById('addDoctorBtn');
 
-      let records = [];
+    let records = [];
 
-      addButton.addEventListener('click', () => {
-        const doctor = doctorInput.value.trim();
-        const patient = patientInput.value.trim();
-        const room = roomInput.value.trim();
-        const nurse = nurseInput.value.trim();
+    addButton.addEventListener('click', () => {
+      const doctor = doctorInput.value.trim();
+      const patient = patientInput.value.trim();
+      const room = roomInput.value.trim();
+      const nurse = nurseInput.value.trim();
 
-        // Check if room number is a positive integer
-        if (!Number.isInteger(Number(room)) || Number(room) < 1) {
-          alert("Room number must be an integer!");
-          return;
-        }
-
-        // Check other fields
-        if (!doctor || !patient || !nurse) {
-          alert("Please fill all fields!");
-          return;
-        }
-
-        const record = { doctor, patient, room, nurse };
-        records.push(record);
-
-        // Add doctor to sidebar
-        const div = document.createElement('div');
-        div.classList.add('doctor-item');
-        div.textContent = `Dr. ${doctor}`;
-        div.addEventListener('click', () => showDetails(record));
-        doctorList.appendChild(div);
-
-        // Reset form
-        doctorInput.value = '';
-        patientInput.value = '';
-        roomInput.value = '';
-        nurseInput.value = '';
-
-        showDetails(record);
-      });
-
-      function showDetails(record) {
-        doctorTitle.textContent = `Dr. ${record.doctor}`;
-        patientInfo.innerHTML = `
-          <strong>Doctor:</strong> ${record.doctor}<br>
-          <strong>Patient:</strong> ${record.patient}<br>
-          <strong>Room No.:</strong> ${record.room}<br>
-          <strong>Nurse Allocated:</strong> ${record.nurse}
-        `;
+      // Check if room number is a positive integer
+      if (!Number.isInteger(Number(room)) || Number(room) < 1) {
+        alert("Room number must be a positive integer!");
+        return;
       }
+
+      // Regex to allow only alphabets and spaces
+      const namePattern = /^[A-Za-z\s]+$/;
+
+      // Validate doctor, patient, and nurse names
+      if (!doctor || !patient || !nurse) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      if (!namePattern.test(doctor)) {
+        alert("Doctor name should contain only alphabets!");
+        return;
+      }
+
+      if (!namePattern.test(patient)) {
+        alert("Patient name should contain only alphabets!");
+        return;
+      }
+
+      if (!namePattern.test(nurse)) {
+        alert("Nurse name should contain only alphabets!");
+        return;
+      }
+
+      const record = { doctor, patient, room, nurse };
+      records.push(record);
+
+      // Add doctor to sidebar
+      const div = document.createElement('div');
+      div.classList.add('doctor-item');
+      div.textContent = `Dr. ${doctor}`;
+      div.addEventListener('click', () => showDetails(record));
+      doctorList.appendChild(div);
+
+      // Reset form
+      doctorInput.value = '';
+      patientInput.value = '';
+      roomInput.value = '';
+      nurseInput.value = '';
+
+      showDetails(record);
     });
-  </script>
+
+    function showDetails(record) {
+      doctorTitle.textContent = `Dr. ${record.doctor}`;
+      patientInfo.innerHTML = `
+        <strong>Doctor:</strong> ${record.doctor}<br>
+        <strong>Patient:</strong> ${record.patient}<br>
+        <strong>Room No.:</strong> ${record.room}<br>
+        <strong>Nurse Allocated:</strong> ${record.nurse}
+      `;
+    }
+  });
+</script>
+
 
 </body>
 </html>
