@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Details</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <a href="main.html" class="back-button">← Back</a>
+  <div class="content" id="detailContent">Loading...</div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const doctorName = urlParams.get('doctor');
+
+    const data = {
+      "Dr. Qwerty": [
+        { name: "John Doe", age: 45, blood: "A+", gender: "Male", report: "High fever, awaiting tests." },
+        { name: "Sara Lee", age: 33, blood: "B+", gender: "Female", report: "Flu symptoms improving." }
+      ],
+      "Dr. House": [
+        { name: "Peter Jones", age: 62, blood: "O-", gender: "Male", report: "Mild concussion, resting." },
+        { name: "Jane Smith", age: 28, blood: "A-", gender: "Female", report: "Post-surgery recovery stable." }
+      ]
+    };
+
+    const patients = data[doctorName] || [];
+    let html = `<h2>${doctorName}</h2><table border="1" cellpadding="8"><tr><th>Name</th><th>Age</th><th>Blood</th><th>Gender</th><th>Report</th></tr>`;
+    patients.forEach(p => {
+      html += `<tr><td>${p.name}</td><td>${p.age}</td><td>${p.blood}</td><td>${p.gender}</td><td>${p.report}</td></tr>`;
+    });
+    html += `</table>`;
+
+    document.getElementById('detailContent').innerHTML = html;
+  </script>
+</body>
+</html>

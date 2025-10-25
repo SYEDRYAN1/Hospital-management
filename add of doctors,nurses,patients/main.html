@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nurse Interface</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <button class="menu-icon add-button" id="menuIcon" type="button">☰</button>
+    <div class="tabs">
+      <div class="tab active">Doctor</div>
+      <div class="tab">Nurse</div>
+      <div class="tab">Analytics</div>
+      <div class="tab">Appointments</div>
+      <div class="tab">Logout</div>
+    </div>
+    <div class="right-controls">
+      <button class="add-button" id="addBtn" title="Add new">+</button>
+
+      <!-- Dropdown Add Menu -->
+      <div class="add-menu" id="addMenu">
+        <div class="add-menu-item" data-type="doctor">➕ Add Doctor</div>
+        <div class="add-menu-item" data-type="patient">➕ Add Patient</div>
+        <div class="add-menu-item" data-type="nurse">➕ Add Nurse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar" id="doctorSidebar"></div>
+    <div class="content">
+      <div class="timing" id="timing">Timing: --</div>
+      <div class="doctor-title" id="doctorTitle">Select a Doctor</div>
+      <div class="patient-info" id="patientInfo">Please select a doctor from the sidebar to view assigned patients.</div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
