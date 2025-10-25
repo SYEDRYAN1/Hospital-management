@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Report Interface</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="menu-icon">☰</div>
+    <div class="tabs">
+      <div class="tab">Doctor</div>
+      <div class="tab">Nurse</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar" id="doctorSidebar">
+      <!-- Only doctor items will be injected here -->
+    </div>
+
+    <div class="content">
+      <a href="main.html" class="back-button">← Back to Overview</a>
+
+      <div class="patient-report-container">
+        <div class="header-cards">
+          <div class="info-card">Doctor's Name: Dr. House</div>
+          <div class="info-card patient-count-card">Patient count: 5</div>
+        </div>
+        
+        <div class="patient-table">
+            <div class="table-header">
+                <div>Patient Name</div>
+                <div>Age</div>
+                <div>Blood GRP</div>
+                <div>Gender</div>
+                <div>Report detail</div>
+            </div>
+
+            <div class="table-row-template">
+                <div>John Doe</div>
+                <div>45</div>
+                <div>A+</div>
+                <div>Male</div>
+                <div class="report-detail-cell">High fever, awaiting blood culture results.</div>
+            </div>
+
+            <div class="table-row-template">
+                <div>Jane Smith</div>
+                <div>28</div>
+                <div>O-</div>
+                <div>Female</div>
+                <div class="report-detail-cell">Post-surgery observation, vitals stable.</div>
+            </div>
+            
+            <div class="table-row-template">
+                <div>Peter Jones</div>
+                <div>62</div>
+                <div>B+</div>
+                <div>Male</div>
+                <div class="report-detail-cell">Initial assessment complete, mild concussion.</div>
+            </div>
+
+            <div class="table-row-template" style="grid-template-columns: 1fr;">
+                <div style="height: 150px; background-color: white; border: none; padding: 0;"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
