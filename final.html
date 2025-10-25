@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nurse Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Top Navigation */
+    .topbar {
+      background-color: #1e88e5;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      justify-content: space-between;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .menu-icon { font-size: 22px; cursor: pointer; }
+    .tabs { display: flex; gap: 20px; }
+    .tab { cursor: pointer; font-weight: 500; padding: 5px 10px; border-radius: 5px; transition: background 0.3s; }
+    .tab:hover, .tab.active { background-color: rgba(255,255,255,0.2); }
+
+    /* Layout container */
+    .main-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background-color: #2196f3;
+      color: white;
+      padding: 20px 10px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+    .sidebar h2 { font-size: 18px; text-align: center; margin-bottom: 20px; }
+    .doctor-item {
+      padding: 12px;
+      background-color: #42a5f5;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+    }
+    .doctor-item:hover { background-color: #1e88e5; transform: scale(1.05); }
+
+    /* Main content area */
+    .content { flex: 1; padding: 25px 30px; overflow-y: auto; }
+    .form-section {
+      margin-bottom: 30px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .form-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #1e88e5;
+    }
+    .form-section input {
+      margin: 8px 10px 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: calc(50% - 12px);
+    }
+    .form-section button {
+      padding: 10px 18px;
+      border: none;
+      background-color: #1e88e5;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+    .form-section button:hover { background-color: #1565c0; }
+
+    .doctor-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #0d47a1;
+    }
+    .patient-info {
+      font-size: 18px;
+      line-height: 1.6;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .patient-info strong { color: #1e88e5; }
+
+    footer {
+      background-color: #1e88e5;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 14px;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+      .form-section input { width: 100%; }
+      .main-container { flex-direction: column; }
+      .sidebar { width: 100%; display: flex; overflow-x: auto; padding: 10px 5px; }
+      .doctor-item { flex: 0 0 auto; margin-right: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="menu-icon">☰</div>
+    <div class="tabs">
+      <div class="tab">Doctor</div>
+      <div class="tab active">Nurse</div>
+      <div class="tab">Analytics</div>
+      <div class="tab">Appointments</div>
+      <div class="tab">Logout</div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="doctorList">
+      <h2>Doctors</h2>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <div class="form-section">
+        <h3>Add Patient & Doctor Details</h3>
+        <input type="text" id="doctorNameInput" placeholder="Enter Doctor Name" required />
+        <input type="text" id="patientNameInput" placeholder="Enter Patient Name" required />
+        <input type="number" id="roomInput" placeholder="Enter Room No." required min="1" />
+        <input type="text" id="nurseInput" placeholder="Enter Nurse Name" required />
+        <button id="addDoctorBtn">Add Entry</button>
+      </div>
+
+      <div class="doctor-title" id="doctorTitle">No Doctor Selected</div>
+      <div class="patient-info" id="patientInfo">
+        Please select a doctor from the left sidebar to view details.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Hospital Management System © 2025 | Nurse Panel
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const doctorList = document.getElementById('doctorList');
+      const doctorTitle = document.getElementById('doctorTitle');
+      const patientInfo = document.getElementById('patientInfo');
+
+      const doctorInput = document.getElementById('doctorNameInput');
+      const patientInput = document.getElementById('patientNameInput');
+      const roomInput = document.getElementById('roomInput');
+      const nurseInput = document.getElementById('nurseInput');
+      const addButton = document.getElementById('addDoctorBtn');
+
+      let records = [];
+
+      addButton.addEventListener('click', () => {
+        const doctor = doctorInput.value.trim();
+        const patient = patientInput.value.trim();
+        const room = roomInput.value.trim();
+        const nurse = nurseInput.value.trim();
+
+        // Check if room number is a positive integer
+        if (!Number.isInteger(Number(room)) || Number(room) < 1) {
+          alert("Room number must be an integer!");
+          return;
+        }
+
+        // Check other fields
+        if (!doctor || !patient || !nurse) {
+          alert("Please fill all fields!");
+          return;
+        }
+
+        const record = { doctor, patient, room, nurse };
+        records.push(record);
+
+        // Add doctor to sidebar
+        const div = document.createElement('div');
+        div.classList.add('doctor-item');
+        div.textContent = `Dr. ${doctor}`;
+        div.addEventListener('click', () => showDetails(record));
+        doctorList.appendChild(div);
+
+        // Reset form
+        doctorInput.value = '';
+        patientInput.value = '';
+        roomInput.value = '';
+        nurseInput.value = '';
+
+        showDetails(record);
+      });
+
+      function showDetails(record) {
+        doctorTitle.textContent = `Dr. ${record.doctor}`;
+        patientInfo.innerHTML = `
+          <strong>Doctor:</strong> ${record.doctor}<br>
+          <strong>Patient:</strong> ${record.patient}<br>
+          <strong>Room No.:</strong> ${record.room}<br>
+          <strong>Nurse Allocated:</strong> ${record.nurse}
+        `;
+      }
+    });
+  </script>
+
+</body>
+</html>
