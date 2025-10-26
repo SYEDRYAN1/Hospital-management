@@ -42,12 +42,15 @@
 
   <div class="main-container">
     <div class="sidebar" id="doctorSidebarContainer">
-  <div class="search-box">
-    <input type="text" id="doctorSearch" placeholder="Search doctor..." />
-  </div>
-  <div id="doctorSidebar"></div>
-</div>
-
+      <div class="search-box">
+        <input type="text" id="doctorSearch" placeholder="Search doctor..." />
+      </div>
+      <div id="doctorSidebar"></div>
+      <div class="doctor-timings">
+        <h3>Doctor Timings</h3>
+        <div id="timingsList"></div>
+      </div>
+    </div>
   </div>
 
   <script src="main.js"></script>
@@ -97,12 +100,19 @@
       .then(data => {
         const lines = data.split('\n');
         const doctorSidebar = document.getElementById('doctorSidebar');
+        const timingsList = document.getElementById('timingsList');
         lines.forEach(line => {
           const [name, specialization, hours] = line.split(';').map(item => item.trim());
           const doctorItem = document.createElement('div');
           doctorItem.className = 'doctor-item';
           doctorItem.textContent = `${name} - ${specialization} (${hours})`;
           doctorSidebar.appendChild(doctorItem);
+
+          // Add timings to the timings list
+          const timingItem = document.createElement('div');
+          timingItem.className = 'timing-item';
+          timingItem.textContent = `${name}: ${hours}`;
+          timingsList.appendChild(timingItem);
         });
       })
       .catch(error => console.error('Error loading doctor data:', error));
