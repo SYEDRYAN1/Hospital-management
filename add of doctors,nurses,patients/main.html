@@ -7,132 +7,157 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-
-<div class="topbar">
-  <button class="menu-icon" id="menuIcon" type="button">Logo</button>
-
-  <div class="tabs">
-    <div class="tab active">Doctor</div>
-    <div class="tab">Nurse</div>
-    <div class="tab">Rooms</div>
-    <div class="tab"> lab technicians</div>
-    <div class="tab">Appointments</div>
-  </div>
-
-  <div class="right-controls">
-
-    <button class="specialization-button" onclick="window.location.href='Category.html'">Specialization</button>
-
-    <!-- Doctor Categories Dropdown -->
-    <div class="doctor-categories" id="doctorCategories">
-      <a class="category-item" href="Category.html">Specialization</a>
+  <div class="topbar">
+    <div class="menu-icon">☰</div>
+    <div class="tabs">
+      <div class="tab active">Doctor</div>
+      <div class="tab">Nurse</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
+      <div class="tab">Analytic</div>
     </div>
-
-    <button class="add-button" id="addBtn" title="Add new">+</button>
-
-    <!-- Dropdown Add Menu -->
-    <div class="add-menu" id="addMenu">
-      <div class="add-menu-item" data-type="doctor">➕ Add Doctor</div>
-      <div class="add-menu-item" data-type="patient">➕ Add Patient</div>
-      <div class="add-menu-item" data-type="nurse">➕ Add Nurse</div>
+    <div class="right-controls">
+      <button class="add-button" id="addBtn" title="Add new">+</button>
+    </div>
+    <div class="add-menu" id="addMenu" aria-hidden="true">
+      <div class="add-menu-item" data-action="add-doctor">+ Add Doctor</div>
+      <div class="add-menu-item" data-action="add-nurse">+ Add Nurse</div>
+      <div class="add-menu-item" data-action="add-patient">+ Add Patient</div>
     </div>
   </div>
-</div>
-
 
   <div class="main-container">
-    <div class="sidebar" id="doctorSidebarContainer">
-      <div class="search-box">
-        <input type="text" id="doctorSearch" placeholder="Search doctor..." />
-      </div>
-      <div id="doctorSidebar"></div>
+    <div class="sidebar" id="doctorSidebar">
+      <!-- Doctor items injected by JS -->
     </div>
-    
-    <div class="doctor-timings">
-      <h3>Doctor Timings</h3>
-      <div id="timingsList"></div>
+    <div class="content">
+      <div class="timing">Timing: 1am - 6am</div>
+      <div class="doctor-title">Doctor 2</div>
+      <div class="patient-info">
+        <strong>Patient:</strong><br>
+        John Doe<br>
+        Room: 302<br>
+        Condition: Stable
+      </div>
+      <a href="Details.html" class="details-button">More Details Patient</a>
     </div>
   </div>
 
   <style>
+    .topbar {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .menu-icon {
+      font-size: 1.5rem;
+      margin-right: 2rem;
+      cursor: pointer;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .tab {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+    }
+
+    .tab.active {
+      border-bottom: 2px solid #007bff;
+      color: #007bff;
+    }
+
     .main-container {
       display: flex;
-      background-color: #f0f0f0; /* Main background color */
-      padding: 20px;
+      height: calc(100vh - 60px);
     }
+
     .sidebar {
-      width: 30%; /* Adjust width as needed */
-      margin-right: 20px;
+      width: 250px;
+      background: #f8f9fa;
+      padding: 1rem;
+      border-right: 1px solid #ddd;
     }
-    .doctor-timings {
-      width: 70%; /* Adjust width as needed */
-      background-color: #ffffff; /* Background for timings section */
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .timing {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .doctor-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .patient-info {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+
+    .details-button {
+      display: inline-block;
+      color: #007bff;
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+
+    .add-menu {
+      display: none;
+      position: absolute;
+      right: 1rem;
+      top: 60px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .add-menu-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+    }
+
+    .add-menu-item:hover {
+      background: #f8f9fa;
     }
   </style>
 
-  <script src="main.js"></script>
   <script>
-    // Toggle doctor categories dropdown (accessible button)
-    (function() {
-      const menuBtn = document.getElementById('menuIcon');
-      const cat = document.getElementById('doctorCategories');
-      // Ensure initial ARIA state and visibility
-      if (!menuBtn.hasAttribute('aria-expanded')) menuBtn.setAttribute('aria-expanded', 'false');
-      if (!cat.style.display) cat.style.display = 'none';
+    // Toggle add menu
+    const addBtn = document.getElementById('addBtn');
+    const addMenu = document.getElementById('addMenu');
+    
+    addBtn.addEventListener('click', () => {
+      addMenu.style.display = addMenu.style.display === 'none' ? 'block' : 'none';
+    });
 
-      menuBtn.addEventListener('click', function(e) {
-        const isHidden = cat.style.display === 'none';
-        cat.style.display = isHidden ? 'block' : 'none';
-        menuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-      });
-
-      // Optional: Hide dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!menuBtn.contains(e.target) && !cat.contains(e.target)) {
-          cat.style.display = 'none';
-          menuBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Make category items actionable: close dropdown and update page when clicked
-      const categoryButtons = cat.querySelectorAll('.category-item');
-      categoryButtons.forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-          const category = btn.getAttribute('data-category') || btn.textContent.trim();
-          // Simple visible feedback: update doctor title to show selected category
-          const titleEl = document.querySelector('.doctor-title');
-          if (titleEl) titleEl.textContent = category;
-          // Close dropdown and update aria
-          cat.style.display = 'none';
-          menuBtn.setAttribute('aria-expanded', 'false');
-          // Optionally, you can emit a custom event or call other logic here
-          // Example: document.dispatchEvent(new CustomEvent('category:selected', { detail: { category } }));
-        });
-      });
-    })();
-
-    // Load doctor data from CSV
+    // Load doctor data
     fetch('Data/DoctorData.csv')
       .then(response => response.text())
       .then(data => {
         const lines = data.split('\n');
         const doctorSidebar = document.getElementById('doctorSidebar');
-        const timingsList = document.getElementById('timingsList');
         lines.forEach(line => {
-          const [name, specialization, hours] = line.split(';').map(item => item.trim());
+          const [name, specialization] = line.split(';').map(item => item.trim());
           const doctorItem = document.createElement('div');
           doctorItem.className = 'doctor-item';
           doctorItem.textContent = `${name} - ${specialization}`;
           doctorSidebar.appendChild(doctorItem);
-
-          // Add timings to the timings list
-          const timingItem = document.createElement('div');
-          timingItem.className = 'timing-item';
-          timingItem.textContent = `${name}: ${hours}`;
-          timingsList.appendChild(timingItem);
         });
       })
       .catch(error => console.error('Error loading doctor data:', error));
