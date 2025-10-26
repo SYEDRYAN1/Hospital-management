@@ -232,33 +232,14 @@
   <script>
     // Nurse data - can be loaded from CSV
     const nurses = [
-      { name: "Nurse Alice", shift: "Morning Shift (6 AM - 2 PM)" },
-      { name: "Nurse Barbara", shift: "Day Shift (2 PM - 10 PM)" },
-      { name: "Nurse Carol", shift: "Night Shift (10 PM - 6 AM)" },
-      { name: "Nurse Diana", shift: "Morning Shift (6 AM - 2 PM)" },
-      { name: "Nurse Emma", shift: "Day Shift (2 PM - 10 PM)" },
-      { name: "Nurse Fiona", shift: "Night Shift (10 PM - 6 AM)" },
-      { name: "Nurse Grace", shift: "Morning Shift (6 AM - 2 PM)" },
-      { name: "Nurse Helen", shift: "Day Shift (2 PM - 10 PM)" }
-    ];
-
-    // Room data - rooms assigned to each nurse
-    const rooms = [
-      { number: "102", status: "Occupied" },
-      { number: "103", status: "Occupied" },
-      { number: "104", status: "Available" },
-      { number: "105", status: "Occupied" },
-      { number: "106", status: "Occupied" },
-      { number: "107", status: "Available" },
-      { number: "108", status: "Occupied" },
-      { number: "109", status: "Occupied" },
-      { number: "110", status: "Available" },
-      { number: "111", status: "Occupied" },
-      { number: "112", status: "Occupied" },
-      { number: "113", status: "Occupied" },
-      { number: "114", status: "Available" },
-      { number: "115", status: "Occupied" },
-      { number: "116", status: "Occupied" }
+      { name: "Nurse Alice", shift: "Morning Shift (6 AM - 2 PM)", hours: "8 hours" },
+      { name: "Nurse Barbara", shift: "Day Shift (2 PM - 10 PM)", hours: "8 hours" },
+      { name: "Nurse Carol", shift: "Night Shift (10 PM - 6 AM)", hours: "8 hours" },
+      { name: "Nurse Diana", shift: "Morning Shift (6 AM - 2 PM)", hours: "7.5 hours" },
+      { name: "Nurse Emma", shift: "Day Shift (2 PM - 10 PM)", hours: "8 hours" },
+      { name: "Nurse Fiona", shift: "Night Shift (10 PM - 6 AM)", hours: "8 hours" },
+      { name: "Nurse Grace", shift: "Morning Shift (6 AM - 2 PM)", hours: "6 hours" },
+      { name: "Nurse Helen", shift: "Day Shift (2 PM - 10 PM)", hours: "8.5 hours" }
     ];
 
     const sidebar = document.getElementById('nurseSidebar');
@@ -304,6 +285,13 @@
 
     renderNurses();
 
+    // Show first nurse by default
+    if (nurses.length > 0) {
+      showNurseRooms(nurses[0]);
+      const firstItem = sidebar.querySelector('.nurse-item');
+      if (firstItem) firstItem.classList.add('selected');
+    }
+
     // Search functionality
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase().trim();
@@ -328,16 +316,36 @@
       nurseShift.textContent = nurse.shift;
 
       roomGrid.innerHTML = '';
-      rooms.forEach(room => {
+      
+      // Create cards showing work hours
+      const workData = [
+        { day: "Monday", hours: nurse.hours },
+        { day: "Tuesday", hours: nurse.hours },
+        { day: "Wednesday", hours: nurse.hours },
+        { day: "Thursday", hours: nurse.hours },
+        { day: "Friday", hours: nurse.hours },
+        { day: "Saturday", hours: "6 hours" },
+        { day: "Sunday", hours: "6 hours" },
+        { day: "Week 1", hours: nurse.hours },
+        { day: "Week 2", hours: nurse.hours },
+        { day: "Week 3", hours: nurse.hours },
+        { day: "Week 4", hours: nurse.hours },
+        { day: "Total Week", hours: "40 hours" },
+        { day: "Total Month", hours: "160 hours" },
+        { day: "Overtime", hours: "4 hours" },
+        { day: "Break Time", hours: "1 hour" }
+      ];
+
+      workData.forEach(work => {
         const card = document.createElement('div');
         card.className = 'room-card';
         card.onclick = () => {
-          alert(`Room ${room.number}\nStatus: ${room.status}\nAssigned to: ${nurse.name}`);
+          alert(`${work.day}\nWorking Time: ${work.hours}\nNurse: ${nurse.name}`);
         };
 
         card.innerHTML = `
-          <div class="room-number">ROOM ${room.number}</div>
-          <div class="room-status">${room.status}</div>
+          <div class="room-number">${work.day}</div>
+          <div class="room-status">${work.hours}</div>
         `;
 
         roomGrid.appendChild(card);
