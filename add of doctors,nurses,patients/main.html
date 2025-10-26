@@ -1,180 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hospital Management - Main</title>
-  <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding: 20px; max-width: 920px; margin: auto; }
-    h1 { margin-bottom: 12px; }
-    .doctors { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-    .doctor-btn { padding: 8px 12px; border: 1px solid #ccc; background: #f8f8f8; border-radius: 6px; cursor: pointer; }
-    .doctor-btn.active { background: #0b74de; color: #fff; border-color: #0b74de; }
-    .info { border: 1px solid #eee; padding: 12px; border-radius: 6px; background: #fff; margin-bottom: 16px; }
-    .label { color: #666; font-size: 13px; }
-    #patient-names { font-weight: 600; }
-    .original-wrap { margin-top: 20px; }
-    .original-wrap pre { background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto; max-height:320px; }
-    .controls { margin-bottom: 8px; }
-    .btn { padding: 6px 10px; border-radius:6px; border:1px solid #bbb; background:#fff; cursor:pointer; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nurse Interface</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <h1>Hospital Dashboard</h1>
 
-  <p class="label">Click a doctor to show which doctor is selected and their patients:</p>
+<div class="topbar">
+  <button class="menu-icon" id="menuIcon" type="button">Logo</button>
 
-  <!-- Example doctor list.
-       You can replace these buttons with your existing markup.
-       Each doctor button should have data-doctor and optionally data-patients (CSV). -->
-  <div class="doctors" id="doctors-list">
-    <button type="button" class="doctor-btn" data-doctor="Dr. Alice Morgan" data-patients="John Doe, Jane Smith">Dr. Alice Morgan</button>
-    <button type="button" class="doctor-btn" data-doctor="Dr. Brian Lee" data-patients="Michael Brown">Dr. Brian Lee</button>
-    <button type="button" class="doctor-btn" data-doctor="Dr. Clara Ruiz" data-patients="">Dr. Clara Ruiz</button>
+  <div class="tabs">
+    <div class="tab active">Doctor</div>
+    <div class="tab">Nurse</div>
+    <div class="tab">Rooms</div>
+    <div class="tab"> lab technicians</div>
+    <div class="tab">Appointments</div>
   </div>
 
-  <div class="info" id="selected-info" aria-live="polite">
-    <p><span class="label">Doctor:</span> <span id="doctor-name">—</span></p>
-    <p><span class="label">Patient(s):</span> <span id="patient-names">—</span></p>
-  </div>
+  <div class="right-controls">
 
-  <!-- ORIGINAL CODE PRESERVATION
-       The original main.html content can be stored below for reference.
-       Replace the placeholder text between the <pre> tags with your original file contents,
-       or paste your original main.html into the editor and save the file — it will then be shown here.
-  -->
-  <div class="original-wrap">
-    <div class="controls">
-      <button id="toggle-original" class="btn">Toggle original code view</button>
-      <button id="copy-original" class="btn">Copy original to clipboard</button>
+    <button class="specialization-button" onclick="window.location.href='Category.html'">Specialization</button>
+
+    <!-- Doctor Categories Dropdown -->
+    <div class="doctor-categories" id="doctorCategories">
+      <a class="category-item" href="Category.html">Specialization</a>
     </div>
 
-    <details id="original-details">
-      <summary>Original main.html (preserved)</summary>
-      <pre id="original-code">
-<!--
-PASTE YOUR ORIGINAL main.html CONTENT HERE
+    <button class="add-button" id="addBtn" title="Add new">+</button>
 
-For example, if your old file started like:
-<!doctype html>
-<html>
-  <head>...</head>
-  <body>...old markup...</body>
-</html>
+    <!-- Dropdown Add Menu -->
+    <div class="add-menu" id="addMenu">
+      <div class="add-menu-item" data-type="doctor">➕ Add Doctor</div>
+      <div class="add-menu-item" data-type="patient">➕ Add Patient</div>
+      <div class="add-menu-item" data-type="nurse">➕ Add Nurse</div>
+    </div>
+  </div>
+</div>
 
-Paste the full original file between this comment block OR remove this comment wrapper and paste raw.
--->
-      </pre>
-    </details>
+
+  <div class="main-container">
+    <div class="sidebar" id="doctorSidebarContainer">
+  <div class="search-box">
+    <input type="text" id="doctorSearch" placeholder="Search doctor..." />
+  </div>
+  <div id="doctorSidebar"></div>
+</div>
+
   </div>
 
+  <script src="main.js"></script>
   <script>
-    (function () {
-      // Selectors - adjust if your existing markup differs
-      const doctorButtonSelector = '.doctor-btn';
-      const doctorsList = document.getElementById('doctors-list');
-      const doctorNameEl = document.getElementById('doctor-name');
-      const patientNamesEl = document.getElementById('patient-names');
+    // Toggle doctor categories dropdown (accessible button)
+    (function() {
+      const menuBtn = document.getElementById('menuIcon');
+      const cat = document.getElementById('doctorCategories');
+      // Ensure initial ARIA state and visibility
+      if (!menuBtn.hasAttribute('aria-expanded')) menuBtn.setAttribute('aria-expanded', 'false');
+      if (!cat.style.display) cat.style.display = 'none';
 
-      function formatPatients(csv) {
-        if (!csv) return 'No patients';
-        const arr = csv.split(',').map(s => s.trim()).filter(Boolean);
-        return arr.length ? arr.join(', ') : 'No patients';
-      }
-
-      function clearActive() {
-        document.querySelectorAll(doctorButtonSelector).forEach(btn => btn.classList.remove('active'));
-      }
-
-      function setSelected(doctorText, patientsCsv, clickedBtn) {
-        doctorNameEl.textContent = doctorText || '—';
-        patientNamesEl.textContent = formatPatients(patientsCsv);
-        clearActive();
-        if (clickedBtn) clickedBtn.classList.add('active');
-      }
-
-      // Attach listeners to doctor buttons (for static buttons)
-      function attachListeners() {
-        const buttons = document.querySelectorAll(doctorButtonSelector);
-        buttons.forEach(btn => {
-          btn.addEventListener('click', function () {
-            const doctor = btn.dataset.doctor || btn.textContent.trim();
-            const patients = btn.dataset.patients || '';
-            setSelected(doctor, patients, btn);
-          });
-        });
-      }
-
-      // Also support delegation in case buttons are added dynamically
-      doctorsList.addEventListener('click', function (e) {
-        const btn = e.target.closest(doctorButtonSelector);
-        if (!btn || !doctorsList.contains(btn)) return;
-        const doctor = btn.dataset.doctor || btn.textContent.trim();
-        const patients = btn.dataset.patients || '';
-        setSelected(doctor, patients, btn);
+      menuBtn.addEventListener('click', function(e) {
+        const isHidden = cat.style.display === 'none';
+        cat.style.display = isHidden ? 'block' : 'none';
+        menuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
       });
 
-      // Initialize listeners and optionally select the first doctor
-      attachListeners();
-      const firstBtn = document.querySelector(doctorButtonSelector);
-      if (firstBtn) {
-        const doctor = firstBtn.dataset.doctor || firstBtn.textContent.trim();
-        const patients = firstBtn.dataset.patients || '';
-        setSelected(doctor, patients, firstBtn);
-      }
-
-      // Original code UI helpers
-      const toggleBtn = document.getElementById('toggle-original');
-      const originalDetails = document.getElementById('original-details');
-      const copyBtn = document.getElementById('copy-original');
-      const origPre = document.getElementById('original-code');
-
-      toggleBtn.addEventListener('click', function () {
-        originalDetails.open = !originalDetails.open;
-      });
-
-      copyBtn.addEventListener('click', function () {
-        const text = origPre.textContent;
-        if (!text || text.trim().length === 0) {
-          alert('No original code present. Paste your old main.html content into the "Original main.html (preserved)" section.');
-          return;
+      // Optional: Hide dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!menuBtn.contains(e.target) && !cat.contains(e.target)) {
+          cat.style.display = 'none';
+          menuBtn.setAttribute('aria-expanded', 'false');
         }
-        navigator.clipboard?.writeText(text).then(() => {
-          alert('Original code copied to clipboard.');
-        }).catch(() => {
-          // fallback
-          const range = document.createRange();
-          range.selectNodeContents(origPre);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          try {
-            document.execCommand('copy');
-            alert('Original code copied to clipboard (fallback).');
-          } catch (err) {
-            alert('Could not copy. Please select and copy manually.');
-          }
-          sel.removeAllRanges();
-        });
       });
 
-      // Optional: allow loading an "original" snippet from localStorage if you previously saved it
-      const saved = localStorage.getItem('main_html_original');
-      if (saved) {
-        origPre.textContent = saved;
-      }
-
-      // If user pastes content into the <pre> (manual edit), save to localStorage on change (only in editors that allow editing <pre>)
-      // Note: <pre> is not editable by default; users editing the file should paste into the file source itself.
+      // Make category items actionable: close dropdown and update page when clicked
+      const categoryButtons = cat.querySelectorAll('.category-item');
+      categoryButtons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          const category = btn.getAttribute('data-category') || btn.textContent.trim();
+          // Simple visible feedback: update doctor title to show selected category
+          const titleEl = document.querySelector('.doctor-title');
+          if (titleEl) titleEl.textContent = category;
+          // Close dropdown and update aria
+          cat.style.display = 'none';
+          menuBtn.setAttribute('aria-expanded', 'false');
+          // Optionally, you can emit a custom event or call other logic here
+          // Example: document.dispatchEvent(new CustomEvent('category:selected', { detail: { category } }));
+        });
+      });
     })();
   </script>
-
-  <!--
-  IMPORTANT:
-  - This file includes a preserved "Original main.html" area. Replace the placeholder comment inside the
-    <pre id="original-code"> with your actual previous main.html contents if you want the old code embedded here.
-  - If you prefer I pull the real original file from your repository and produce a proper delta/patch, paste your current
-    main.html here or give me permission to read the file in the repository and I'll fetch it and update the file for you.
-  -->
 </body>
 </html>
