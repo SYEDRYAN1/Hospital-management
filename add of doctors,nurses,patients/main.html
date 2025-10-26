@@ -5,14 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Hospital Management - Main</title>
   <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding: 20px; max-width: 820px; margin: auto; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding: 20px; max-width: 920px; margin: auto; }
     h1 { margin-bottom: 12px; }
     .doctors { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
     .doctor-btn { padding: 8px 12px; border: 1px solid #ccc; background: #f8f8f8; border-radius: 6px; cursor: pointer; }
     .doctor-btn.active { background: #0b74de; color: #fff; border-color: #0b74de; }
-    .info { border: 1px solid #eee; padding: 12px; border-radius: 6px; background: #fff; }
+    .info { border: 1px solid #eee; padding: 12px; border-radius: 6px; background: #fff; margin-bottom: 16px; }
     .label { color: #666; font-size: 13px; }
     #patient-names { font-weight: 600; }
+    .original-wrap { margin-top: 20px; }
+    .original-wrap pre { background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto; max-height:320px; }
+    .controls { margin-bottom: 8px; }
+    .btn { padding: 6px 10px; border-radius:6px; border:1px solid #bbb; background:#fff; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -21,12 +25,12 @@
   <p class="label">Click a doctor to show which doctor is selected and their patients:</p>
 
   <!-- Example doctor list.
-       Adjust these buttons to match your real data (add data-doctor & data-patients attributes). -->
+       You can replace these buttons with your existing markup.
+       Each doctor button should have data-doctor and optionally data-patients (CSV). -->
   <div class="doctors" id="doctors-list">
     <button type="button" class="doctor-btn" data-doctor="Dr. Alice Morgan" data-patients="John Doe, Jane Smith">Dr. Alice Morgan</button>
     <button type="button" class="doctor-btn" data-doctor="Dr. Brian Lee" data-patients="Michael Brown">Dr. Brian Lee</button>
     <button type="button" class="doctor-btn" data-doctor="Dr. Clara Ruiz" data-patients="">Dr. Clara Ruiz</button>
-    <!-- Add more doctor buttons as needed -->
   </div>
 
   <div class="info" id="selected-info" aria-live="polite">
@@ -34,9 +38,39 @@
     <p><span class="label">Patient(s):</span> <span id="patient-names">—</span></p>
   </div>
 
+  <!-- ORIGINAL CODE PRESERVATION
+       The original main.html content can be stored below for reference.
+       Replace the placeholder text between the <pre> tags with your original file contents,
+       or paste your original main.html into the editor and save the file — it will then be shown here.
+  -->
+  <div class="original-wrap">
+    <div class="controls">
+      <button id="toggle-original" class="btn">Toggle original code view</button>
+      <button id="copy-original" class="btn">Copy original to clipboard</button>
+    </div>
+
+    <details id="original-details">
+      <summary>Original main.html (preserved)</summary>
+      <pre id="original-code">
+<!--
+PASTE YOUR ORIGINAL main.html CONTENT HERE
+
+For example, if your old file started like:
+<!doctype html>
+<html>
+  <head>...</head>
+  <body>...old markup...</body>
+</html>
+
+Paste the full original file between this comment block OR remove this comment wrapper and paste raw.
+-->
+      </pre>
+    </details>
+  </div>
+
   <script>
     (function () {
-      // Selectors - change these if your markup differs
+      // Selectors - adjust if your existing markup differs
       const doctorButtonSelector = '.doctor-btn';
       const doctorsList = document.getElementById('doctors-list');
       const doctorNameEl = document.getElementById('doctor-name');
@@ -59,7 +93,7 @@
         if (clickedBtn) clickedBtn.classList.add('active');
       }
 
-      // Attach listeners to existing doctor buttons
+      // Attach listeners to doctor buttons (for static buttons)
       function attachListeners() {
         const buttons = document.querySelectorAll(doctorButtonSelector);
         buttons.forEach(btn => {
@@ -71,7 +105,7 @@
         });
       }
 
-      // If your app dynamically injects doctor buttons later, we can delegate:
+      // Also support delegation in case buttons are added dynamically
       doctorsList.addEventListener('click', function (e) {
         const btn = e.target.closest(doctorButtonSelector);
         if (!btn || !doctorsList.contains(btn)) return;
@@ -80,17 +114,67 @@
         setSelected(doctor, patients, btn);
       });
 
-      // Initialize
+      // Initialize listeners and optionally select the first doctor
       attachListeners();
-
-      // Optional: choose first doctor automatically on load
       const firstBtn = document.querySelector(doctorButtonSelector);
       if (firstBtn) {
         const doctor = firstBtn.dataset.doctor || firstBtn.textContent.trim();
         const patients = firstBtn.dataset.patients || '';
         setSelected(doctor, patients, firstBtn);
       }
+
+      // Original code UI helpers
+      const toggleBtn = document.getElementById('toggle-original');
+      const originalDetails = document.getElementById('original-details');
+      const copyBtn = document.getElementById('copy-original');
+      const origPre = document.getElementById('original-code');
+
+      toggleBtn.addEventListener('click', function () {
+        originalDetails.open = !originalDetails.open;
+      });
+
+      copyBtn.addEventListener('click', function () {
+        const text = origPre.textContent;
+        if (!text || text.trim().length === 0) {
+          alert('No original code present. Paste your old main.html content into the "Original main.html (preserved)" section.');
+          return;
+        }
+        navigator.clipboard?.writeText(text).then(() => {
+          alert('Original code copied to clipboard.');
+        }).catch(() => {
+          // fallback
+          const range = document.createRange();
+          range.selectNodeContents(origPre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          try {
+            document.execCommand('copy');
+            alert('Original code copied to clipboard (fallback).');
+          } catch (err) {
+            alert('Could not copy. Please select and copy manually.');
+          }
+          sel.removeAllRanges();
+        });
+      });
+
+      // Optional: allow loading an "original" snippet from localStorage if you previously saved it
+      const saved = localStorage.getItem('main_html_original');
+      if (saved) {
+        origPre.textContent = saved;
+      }
+
+      // If user pastes content into the <pre> (manual edit), save to localStorage on change (only in editors that allow editing <pre>)
+      // Note: <pre> is not editable by default; users editing the file should paste into the file source itself.
     })();
   </script>
+
+  <!--
+  IMPORTANT:
+  - This file includes a preserved "Original main.html" area. Replace the placeholder comment inside the
+    <pre id="original-code"> with your actual previous main.html contents if you want the old code embedded here.
+  - If you prefer I pull the real original file from your repository and produce a proper delta/patch, paste your current
+    main.html here or give me permission to read the file in the repository and I'll fetch it and update the file for you.
+  -->
 </body>
 </html>
