@@ -46,12 +46,32 @@
         <input type="text" id="doctorSearch" placeholder="Search doctor..." />
       </div>
       <div id="doctorSidebar"></div>
-      <div class="doctor-timings">
-        <h3>Doctor Timings</h3>
-        <div id="timingsList"></div>
-      </div>
+    </div>
+    
+    <div class="doctor-timings">
+      <h3>Doctor Timings</h3>
+      <div id="timingsList"></div>
     </div>
   </div>
+
+  <style>
+    .main-container {
+      display: flex;
+      background-color: #f0f0f0; /* Main background color */
+      padding: 20px;
+    }
+    .sidebar {
+      width: 30%; /* Adjust width as needed */
+      margin-right: 20px;
+    }
+    .doctor-timings {
+      width: 70%; /* Adjust width as needed */
+      background-color: #ffffff; /* Background for timings section */
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 
   <script src="main.js"></script>
   <script>
@@ -105,7 +125,7 @@
           const [name, specialization, hours] = line.split(';').map(item => item.trim());
           const doctorItem = document.createElement('div');
           doctorItem.className = 'doctor-item';
-          doctorItem.textContent = `${name} - ${specialization} (${hours})`;
+          doctorItem.textContent = `${name} - ${specialization}`;
           doctorSidebar.appendChild(doctorItem);
 
           // Add timings to the timings list
