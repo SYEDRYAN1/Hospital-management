@@ -90,6 +90,22 @@
         });
       });
     })();
+
+    // Load doctor data from CSV
+    fetch('Data/DoctorData.csv')
+      .then(response => response.text())
+      .then(data => {
+        const lines = data.split('\n');
+        const doctorSidebar = document.getElementById('doctorSidebar');
+        lines.forEach(line => {
+          const [name, specialization, hours] = line.split(';').map(item => item.trim());
+          const doctorItem = document.createElement('div');
+          doctorItem.className = 'doctor-item';
+          doctorItem.textContent = `${name} - ${specialization} (${hours})`;
+          doctorSidebar.appendChild(doctorItem);
+        });
+      })
+      .catch(error => console.error('Error loading doctor data:', error));
   </script>
 </body>
 </html>
