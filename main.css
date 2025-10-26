@@ -1,0 +1,224 @@
+/* ...existing CSS... */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f6f8fa;
+  color: #222;
+  font-size: 1.1em;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0 24px;
+  height: 56px;
+  position: relative;
+  z-index: 2;
+}
+.menu-icon {
+  font-size: 1.7em;
+  margin-right: 18px;
+  cursor: pointer;
+}
+.tabs {
+  display: flex;
+  gap: 32px;
+  flex: 1;
+}
+.tab {
+  padding: 8px 18px;
+  font-size: 1.1em;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  background: #f6f8fa;
+  margin-top: 8px;
+}
+.tab.active {
+  background: #e3f2fd;
+  font-weight: bold;
+  border-bottom: 2px solid #1976d2;
+}
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.add-button {
+  font-size: 1.5em;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+.add-menu {
+  position: absolute;
+  top: 56px;
+  right: 24px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  z-index: 10;
+}
+.add-menu.show {
+  display: flex;
+}
+.add-menu-item {
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+.add-menu-item:last-child {
+  border-bottom: none;
+}
+.add-menu-item:hover {
+  background: #e3f2fd;
+}
+.main-container {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.sidebar {
+  background: #fff;
+  width: 180px;
+  min-width: 140px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.doctor-item {
+  padding: 12px 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 0 8px;
+  font-size: 1.05em;
+  transition: background 0.2s;
+}
+.doctor-item:hover, .doctor-item.selected {
+  background: #e3f2fd;
+  font-weight: bold;
+}
+.content {
+  flex: 1;
+  padding: 32px 40px;
+  background: #f6f8fa;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.timing {
+  font-size: 1.1em;
+  color: #1976d2;
+  text-align: right;
+  margin-bottom: 8px;
+}
+.doctor-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+.patient-info {
+  font-size: 1.2em;
+  margin-bottom: 12px;
+}
+.details-button, .back-button {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 18px;
+  background: #1976d2;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+.details-button:hover, .back-button:hover {
+  background: #1565c0;
+}
+.patient-report-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 32px;
+  margin-top: 16px;
+}
+.header-cards {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+.info-card {
+  background: #e3f2fd;
+  border-radius: 8px;
+  padding: 18px 28px;
+  font-size: 1.2em;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.patient-count-card {
+  background: #fffde7;
+  color: #fbc02d;
+}
+.patient-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 12px;
+}
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+  background: #e3f2fd;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  padding: 12px 0;
+  font-size: 1.1em;
+}
+.table-row-template {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+  font-size: 1em;
+}
+.report-detail-cell {
+  font-size: 0.98em;
+  color: #333;
+}
+.table-row-template:last-child {
+  border-radius: 0 0 8px 8px;
+  border-bottom: none;
+  background: #fff;
+}
+
+/* Doctor categories menu buttons */
+.doctor-categories .category-item {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1em;
+  color: #222;
+}
+.doctor-categories .category-item:hover,
+.doctor-categories .category-item:focus {
+  background: #e3f2fd;
+  outline: none;
+}
