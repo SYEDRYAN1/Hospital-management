@@ -4,11 +4,409 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nurse Interface</title>
-  <link rel="stylesheet" href="main.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f6f8fa;
+      color: #222;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Topbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 0 24px;
+      height: 56px;
+      position: relative;
+      z-index: 2;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .menu-icon {
+      font-size: 1.7em;
+      margin-right: 18px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: #1976d2;
+      transition: color 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0;
+    }
+
+    .menu-icon span {
+      display: block;
+      width: 24px;
+      height: 3px;
+      background: #1976d2;
+      border-radius: 2px;
+    }
+
+    .menu-icon:hover span {
+      background: #1565c0;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+    }
+
+    .tab {
+      padding: 8px 18px;
+      font-size: 1.1em;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      background: transparent;
+      transition: background 0.2s, border-bottom 0.2s;
+      position: relative;
+    }
+
+    .tab:hover {
+      background: #e3f2fd;
+    }
+
+    .tab.active {
+      background: #e3f2fd;
+      font-weight: bold;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #1976d2;
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Right Controls */
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .add-button {
+      font-size: 1.5em;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-button:hover {
+      background: #1565c0;
+      transform: scale(1.1);
+    }
+
+    /* Add Menu */
+    .add-menu {
+      position: absolute;
+      top: 56px;
+      right: 24px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      min-width: 160px;
+      z-index: 10;
+      border: 1px solid #e0e0e0;
+    }
+
+    .add-menu.show {
+      display: flex;
+    }
+
+    .add-menu-item {
+      padding: 12px 18px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .add-menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .add-menu-item:hover {
+      background: #e3f2fd;
+    }
+
+    /* Main Container */
+    .main-container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      gap: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #fff;
+      border-right: 2px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .search-box {
+      padding: 16px;
+      background: #fff;
+      border-bottom: 2px solid #e0e0e0;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: #1976d2;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+
+    .doctor-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .doctor-item {
+      padding: 14px 16px;
+      cursor: pointer;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1.05em;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .doctor-item:hover {
+      background: #f5f5f5;
+      border-color: #1976d2;
+    }
+
+    .doctor-item.selected {
+      background: #e3f2fd;
+      border-color: #1976d2;
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      padding: 24px;
+      background: #f6f8fa;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .content-wrapper {
+      background: #fff;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .doctor-title {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .timing {
+      font-size: 1.2em;
+      color: #1976d2;
+      font-weight: 500;
+    }
+
+    .patient-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .patient-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .patient-title {
+      font-size: 2em;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .details-button {
+      padding: 10px 24px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .details-button:hover {
+      background: #1565c0;
+      transform: translateY(-1px);
+    }
+
+    .patient-info {
+      flex: 1;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 24px;
+      background: #fafafa;
+      overflow-y: auto;
+    }
+
+    .patient-info-content {
+      font-size: 1.1em;
+      line-height: 1.8;
+    }
+
+    /* Patient Table Styles */
+    .patient-report-container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-cards {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .info-card {
+      background: #e3f2fd;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 1.1em;
+      font-weight: 500;
+      border: 2px solid #1976d2;
+    }
+
+    .patient-count-card {
+      background: #fff3e0;
+      border-color: #fb8c00;
+      color: #e65100;
+    }
+
+    .patient-table {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      background: #e3f2fd;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+      padding: 12px 8px;
+      font-size: 1em;
+      border: 2px solid #1976d2;
+      border-bottom: none;
+    }
+
+    .table-header > div {
+      padding: 0 8px;
+    }
+
+    .table-body {
+      flex: 1;
+      overflow-y: auto;
+      border: 2px solid #1976d2;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .table-row-template {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 8px;
+      font-size: 0.95em;
+    }
+
+    .table-row-template > div {
+      padding: 0 8px;
+    }
+
+    .table-row-template:last-child {
+      border-bottom: none;
+    }
+
+    .report-detail-cell {
+      color: #555;
+    }
+  </style>
 </head>
 <body>
   <div class="topbar">
-    <div class="menu-icon">☰</div>
+    <button class="menu-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
     <div class="tabs">
       <div class="tab active">Doctor</div>
       <div class="tab">Nurse</div>
@@ -19,148 +417,198 @@
     <div class="right-controls">
       <button class="add-button" id="addBtn" title="Add new">+</button>
     </div>
-    <div class="add-menu" id="addMenu" aria-hidden="true">
-      <div class="add-menu-item" data-action="add-doctor">+ Add Doctor</div>
-      <div class="add-menu-item" data-action="add-nurse">+ Add Nurse</div>
-      <div class="add-menu-item" data-action="add-patient">+ Add Patient</div>
+    <div class="add-menu" id="addMenu">
+      <div class="add-menu-item" data-type="doctor">+ Add Doctor</div>
+      <div class="add-menu-item" data-type="nurse">+ Add Nurse</div>
+      <div class="add-menu-item" data-type="patient">+ Add Patient</div>
     </div>
   </div>
 
   <div class="main-container">
-    <div class="sidebar" id="doctorSidebar">
-      <!-- Doctor items injected by JS -->
-    </div>
-    <div class="content">
-      <div class="timing">Timing: 1am - 6am</div>
-      <div class="doctor-title">Doctor 2</div>
-      <div class="patient-info">
-        <strong>Patient:</strong><br>
-        John Doe<br>
-        Room: 302<br>
-        Condition: Stable
+    <div class="sidebar">
+      <div class="search-box">
+        <input type="text" id="doctorSearch" placeholder="Search doctors...">
       </div>
-      <a href="Details.html" class="details-button">More Details Patient</a>
+      <div class="doctor-list" id="doctorSidebar">
+        <!-- Doctor items injected by JS -->
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="doctor-title" id="doctorTitle">Select a doctor</div>
+          <div class="timing" id="timing">-</div>
+        </div>
+
+        <div class="patient-section">
+          <div class="patient-header">
+            <div class="patient-title">Patient</div>
+            <a href="Details.html" class="details-button">More Details Patient</a>
+          </div>
+          <div class="patient-info" id="patientInfo">
+            <div class="patient-info-content">
+              <em>Select a doctor to view patient information</em>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <style>
-    .topbar {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .menu-icon {
-      font-size: 1.5rem;
-      margin-right: 2rem;
-      cursor: pointer;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .tab {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-    }
-
-    .tab.active {
-      border-bottom: 2px solid #007bff;
-      color: #007bff;
-    }
-
-    .main-container {
-      display: flex;
-      height: calc(100vh - 60px);
-    }
-
-    .sidebar {
-      width: 250px;
-      background: #f8f9fa;
-      padding: 1rem;
-      border-right: 1px solid #ddd;
-    }
-
-    .content {
-      flex: 1;
-      padding: 2rem;
-    }
-
-    .timing {
-      color: #666;
-      margin-bottom: 1rem;
-    }
-
-    .doctor-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
-    }
-
-    .patient-info {
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
-    }
-
-    .details-button {
-      display: inline-block;
-      color: #007bff;
-      text-decoration: none;
-      margin-top: 1rem;
-    }
-
-    .add-menu {
-      display: none;
-      position: absolute;
-      right: 1rem;
-      top: 60px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .add-menu-item {
-      padding: 0.75rem 1rem;
-      cursor: pointer;
-    }
-
-    .add-menu-item:hover {
-      background: #f8f9fa;
-    }
-  </style>
-
   <script>
-    // Toggle add menu
-    const addBtn = document.getElementById('addBtn');
-    const addMenu = document.getElementById('addMenu');
-    
-    addBtn.addEventListener('click', () => {
-      addMenu.style.display = addMenu.style.display === 'none' ? 'block' : 'none';
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.getElementById('doctorSidebar');
+      const doctorTitle = document.getElementById('doctorTitle');
+      const timingEl = document.getElementById('timing');
+      const patientInfo = document.getElementById('patientInfo');
+      const addBtn = document.getElementById('addBtn');
+      const addMenu = document.getElementById('addMenu');
+      const searchInput = document.getElementById('doctorSearch');
 
-    // Load doctor data
-    fetch('Data/DoctorData.csv')
-      .then(response => response.text())
-      .then(data => {
-        const lines = data.split('\n');
-        const doctorSidebar = document.getElementById('doctorSidebar');
-        lines.forEach(line => {
-          const [name, specialization] = line.split(';').map(item => item.trim());
-          const doctorItem = document.createElement('div');
-          doctorItem.className = 'doctor-item';
-          doctorItem.textContent = `${name} - ${specialization}`;
-          doctorSidebar.appendChild(doctorItem);
+      const doctors = [
+        { name: "Dr. Qwerty", specialty: "Cardiologist", timing: "10 AM - 2 PM" },
+        { name: "Dr. House", specialty: "Neurologist", timing: "2 PM - 6 PM" },
+        { name: "Dr. Smith", specialty: "Surgeon", timing: "6 PM - 10 PM" }
+      ];
+
+      const patients = [
+        { doctor: "Dr. Qwerty", name: "John Doe", age: 45, blood: "A+", gender: "Male", report: "High fever, awaiting tests." },
+        { doctor: "Dr. Qwerty", name: "Sara Lee", age: 33, blood: "B+", gender: "Female", report: "Flu symptoms improving." },
+        { doctor: "Dr. House", name: "Peter Jones", age: 62, blood: "O-", gender: "Male", report: "Mild concussion, resting." },
+        { doctor: "Dr. House", name: "Jane Smith", age: 28, blood: "A-", gender: "Female", report: "Post-surgery recovery stable." },
+        { doctor: "Dr. Smith", name: "Mark Kim", age: 51, blood: "B+", gender: "Male", report: "Preparing for minor surgery." }
+      ];
+
+      function renderDoctors(filterQuery = '') {
+        const query = filterQuery.toLowerCase().trim();
+        const filteredDoctors = query
+          ? doctors.filter(doc =>
+              doc.name.toLowerCase().includes(query) ||
+              doc.specialty.toLowerCase().includes(query)
+            )
+          : doctors;
+
+        sidebar.innerHTML = '';
+        filteredDoctors.forEach((doc, idx) => {
+          const div = document.createElement('div');
+          div.className = 'doctor-item';
+          div.textContent = doc.name;
+          div.dataset.idx = doctors.indexOf(doc);
+          sidebar.appendChild(div);
         });
-      })
-      .catch(error => console.error('Error loading doctor data:', error));
+      }
+
+      renderDoctors();
+
+      searchInput.addEventListener('input', () => {
+        renderDoctors(searchInput.value);
+      });
+
+      function showDoctorDetails(doctor) {
+        doctorTitle.textContent = doctor.name;
+        timingEl.textContent = `Timing: ${doctor.timing}`;
+
+        const filtered = patients.filter(p => p.doctor === doctor.name);
+        if (filtered.length === 0) {
+          patientInfo.innerHTML = `<em>No patients assigned to ${doctor.name}.</em>`;
+          return;
+        }
+
+        let html = `
+          <div class="patient-report-container">
+            <div class="header-cards">
+              <div class="info-card">Doctor: ${doctor.name}</div>
+              <div class="info-card patient-count-card">Patients: ${filtered.length}</div>
+            </div>
+            <div class="patient-table">
+              <div class="table-header">
+                <div>Patient Name</div>
+                <div>Age</div>
+                <div>Blood GRP</div>
+                <div>Gender</div>
+                <div>Report Detail</div>
+              </div>
+              <div class="table-body">
+        `;
+
+        filtered.forEach(p => {
+          html += `
+            <div class="table-row-template">
+              <div>${p.name}</div>
+              <div>${p.age}</div>
+              <div>${p.blood}</div>
+              <div>${p.gender}</div>
+              <div class="report-detail-cell">${p.report}</div>
+            </div>
+          `;
+        });
+
+        html += `</div></div></div>`;
+        patientInfo.innerHTML = html;
+      }
+
+      sidebar.addEventListener('click', e => {
+        const item = e.target.closest('.doctor-item');
+        if (!item) return;
+        sidebar.querySelectorAll('.doctor-item').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        showDoctorDetails(doctors[item.dataset.idx]);
+      });
+
+      addBtn.addEventListener('click', () => {
+        addMenu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', e => {
+        if (!addBtn.contains(e.target) && !addMenu.contains(e.target)) {
+          addMenu.classList.remove('show');
+        }
+      });
+
+      addMenu.addEventListener('click', e => {
+        const type = e.target.dataset.type;
+        if (!type) return;
+
+        addMenu.classList.remove('show');
+
+        if (type === 'doctor') {
+          const name = prompt("Enter Doctor's Name:");
+          const specialty = prompt("Enter Specialty:");
+          const timing = prompt("Enter Timing:");
+          if (name && specialty && timing) {
+            doctors.push({ name: `Dr. ${name}`, specialty, timing });
+            renderDoctors();
+            alert(`Doctor ${name} added successfully!`);
+          }
+        } else if (type === 'patient') {
+          const doctor = prompt("Assign to which doctor?");
+          const name = prompt("Enter Patient Name:");
+          const age = prompt("Enter Age:");
+          const blood = prompt("Enter Blood Group:");
+          const gender = prompt("Enter Gender:");
+          const report = prompt("Enter Report Detail:");
+
+          if (doctor && name && age && blood && gender && report) {
+            if (isNaN(age)) return alert("Age must be an integer!");
+            patients.push({ doctor: `Dr. ${doctor}`, name, age: Number(age), blood, gender, report });
+            alert(`Patient ${name} assigned to Dr. ${doctor}`);
+          }
+        } else if (type === 'nurse') {
+          const name = prompt("Enter Nurse Name:");
+          const shift = prompt("Enter Shift Timing:");
+          alert(`Nurse ${name} added for shift ${shift}.`);
+        }
+      });
+
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        });
+      });
+    });
   </script>
 </body>
 </html>
